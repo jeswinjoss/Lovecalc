@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Calculator - Find Your Perfect Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .hearts {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .love-percentage {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .couple-name {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .love-message {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e, #ffb3ba);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 1.5s ease;
+        }
+
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            color: #ff69b4;
+            z-index: 1000;
+            animation: floatUp 3s linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .input-group input {
+                padding: 12px 16px;
+                font-size: 1rem;
+            }
+            
+            .calculate-btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .love-percentage {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hearts">💕</div>
+        
+        <div class="header">
+            <h1>Love Calculator</h1>
+            <p>Discover your love compatibility!</p>
+        </div>
+
+        <div class="form-container">
+            <div class="input-group">
+                <label for="name1">Your Name</label>
+                <input type="text" id="name1" placeholder="Enter your name" maxlength="50">
+            </div>
+
+            <div class="input-group">
+                <label for="name2">Partner's Name</label>
+                <input type="text" id="name2" placeholder="Enter your partner's name" maxlength="50">
+            </div>
+
+            <button class="calculate-btn" id="calculateBtn" onclick="calculateLove()">
+                Calculate Love ❤️
+            </button>
+        </div>
+
+        <div class="result-container" id="result">
+            <div class="love-percentage" id="percentage">0%</div>
+            <div class="couple-name" id="coupleName"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="love-message" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateLove() {
+            try {
+                const name1Input = document.getElementById('name1');
+                const name2Input = document.getElementById('name2');
+                const calculateBtn = document.getElementById('calculateBtn');
+                
+                if (!name1Input || !name2Input || !calculateBtn) {
+                    console.error('Required elements not found');
+                    return;
+                }
+
+                const name1 = name1Input.value.trim();
+                const name2 = name2Input.value.trim();
+                
+                if (!name1 || !name2) {
+                    alert('Please enter both names!');
+                    return;
+                }
+
+                // Disable button during calculation
+                calculateBtn.disabled = true;
+                calculateBtn.textContent = 'Calculating... 💖';
+
+                // Create floating hearts
+                createFloatingHearts();
+
+                // Calculate love percentage
+                const loveScore = calculateLoveScore(name1, name2);
+                
+                // Generate couple name
+                const coupleName = generateCoupleName(name1, name2);
+                
+                // Get love message
+                const message = getLoveMessage(loveScore);
+                
+                // Display results after a short delay
+                setTimeout(() => {
+                    displayResults(loveScore, coupleName, message);
+                    calculateBtn.disabled = false;
+                    calculateBtn.textContent = 'Calculate Love ❤️';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error in calculateLove:', error);
+                alert('An error occurred. Please try again!');
+                const calculateBtn = document.getElementById('calculateBtn');
+                if (calculateBtn) {
+                    calculateBtn.disabled = false;
+                    calculateBtn.textContent = 'Calculate Love ❤️';
+                }
+            }
+        }
+
+        function calculateLoveScore(name1, name2) {
+            try {
+                const combinedNames = (name1 + name2).toLowerCase().replace(/\s/g, '');
+                let loveScore = 0;
+                
+                // Simple algorithm based on name compatibility
+                for (let i = 0; i < name1.length; i++) {
+                    const char = name1.charAt(i).toLowerCase();
+                    if (name2.toLowerCase().includes(char)) {
+                        loveScore += 8;
+                    }
+                }
+                
+                // Add some variation based on name lengths
+                loveScore += (name1.length + name2.length) * 3;
+                
+                // Add some controlled randomness
+                const seed = combinedNames.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                loveScore += (seed % 25) + 25;
+                
+                // Ensure score is between 40 and 100
+                loveScore = Math.max(40, Math.min(100, loveScore % 101));
+                
+                return Math.floor(loveScore);
+            } catch (error) {
+                console.error('Error calculating score:', error);
+                return 75; // Default score
+            }
+        }
+
+        function generateCoupleName(name1, name2) {
+            try {
+                const firstHalf = name1.substring(0, Math.ceil(name1.length / 2));
+                const secondHalf = name2.substring(Math.floor(name2.length / 2));
+                return firstHalf + secondHalf;
+            } catch (error) {
+                console.error('Error generating couple name:', error);
+                return name1 + ' & ' + name2;
+            }
+        }
+
+        function getLoveMessage(score) {
+            if (score >= 90) return "Perfect match! You two are soulmates! 💕";
+            if (score >= 80) return "Amazing compatibility! Love is in the air! 🌟";
+            if (score >= 70) return "Great potential! You make a wonderful couple! 💖";
+            if (score >= 60) return "Good match! With effort, you can build something beautiful! 🌹";
+            if (score >= 50) return "There's definitely something there! Keep getting to know each other! 💝";
+            return "Friendship first! Sometimes the best relationships start as friends! 🤝";
+        }
+
+        function displayResults(score, coupleName, message) {
+            try {
+                const percentageEl = document.getElementById('percentage');
+                const coupleNameEl = document.getElementById('coupleName');
+                const messageEl = document.getElementById('message');
+                const resultContainer = document.getElementById('result');
+                const progressFill = document.getElementById('progressFill');
+                
+                if (percentageEl) percentageEl.textContent = score + '%';
+                if (coupleNameEl) coupleNameEl.textContent = coupleName;
+                if (messageEl) messageEl.textContent = message;
+                
+                if (resultContainer) {
+                    resultContainer.style.display = 'block';
+                    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                
+                // Animate progress bar
+                if (progressFill) {
+                    setTimeout(() => {
+                        progressFill.style.width = score + '%';
+                    }, 300);
+                }
+                
+            } catch (error) {
+                console.error('Error displaying results:', error);
+            }
+        }
+
+        function createFloatingHearts() {
+            try {
+                const hearts = ['💖', '💕', '💗', '💘', '❤️'];
+                
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'floating-heart';
+                        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                        heart.style.left = Math.random() * window.innerWidth + 'px';
+                        heart.style.top = window.innerHeight + 'px';
+                        
+                        document.body.appendChild(heart);
+                        
+                        setTimeout(() => {
+                            if (heart.parentNode) {
+                                heart.parentNode.removeChild(heart);
+                            }
+                        }, 3000);
+                    }, i * 200);
+                }
+            } catch (error) {
+                console.error('Error creating floating hearts:', error);
+            }
+        }
+
+        // Add enter key support
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        calculateLove();
+                    }
+                });
+            });
+        });
+
+        // Prevent form submission
+        document.addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateLove();
+        });
+    </script>
+</body>
+</html>
