@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const loader = document.getElementById('loader');
+    // Smooth loading screen removal
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 1000);
+    }, 2500);
+
     const name1Input = document.getElementById('name1');
     const name2Input = document.getElementById('name2');
     const calculateBtn = document.getElementById('calculateBtn');
@@ -9,18 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const name2 = name2Input.value.trim();
 
         if (!name1 || !name2) {
-            alert('Please enter both names to find your destiny!');
+            alert('Please enter both names to find your Valentine match!');
             return;
         }
 
-        // UI Feedback
         calculateBtn.disabled = true;
-        calculateBtn.textContent = 'Consulting the Stars...';
+        calculateBtn.textContent = 'Reading Hearts...';
         resultContainer.classList.add('hidden');
-
+        
+        // Visual feedback
         spawnHearts();
 
-        // Calculation Logic
         const score = getScore(name1, name2);
         const coupleName = getCoupleName(name1, name2);
         const message = getMessage(score);
@@ -28,8 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             showResults(score, coupleName, message);
             calculateBtn.disabled = false;
-            calculateBtn.textContent = 'Calculate Love ❤️';
-        }, 1500);
+            calculateBtn.textContent = 'Ignite Love ❤️';
+            // Scroll to results on mobile
+            if (window.innerWidth < 768) {
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 2200);
     });
 });
 
@@ -39,8 +49,8 @@ function getScore(n1, n2) {
     for (let i = 0; i < combined.length; i++) {
         sum += combined.charCodeAt(i);
     }
-    // Deterministic but feels random: Use prime number and modulo
-    let score = (sum * 7) % 61 + 40; 
+    // Algorithm for consistent but seemingly random scores based on names
+    let score = (sum * 17) % 41 + 60; 
     if (score > 100) score = 100;
     return score;
 }
@@ -52,11 +62,11 @@ function getCoupleName(n1, n2) {
 }
 
 function getMessage(score) {
-    if (score >= 90) return "A match made in heaven! You are twin flames.";
-    if (score >= 80) return "Pure electricity! You guys are perfect for each other.";
-    if (score >= 70) return "Strong chemistry detected. Go for it!";
-    if (score >= 50) return "Potential is there, but communication is key.";
-    return "The stars suggest starting as friends first!";
+    if (score >= 95) return "A legendary Valentine bond! You're written in the stars with golden ink.";
+    if (score >= 85) return "Passionate and pure. A golden match that will never fade!";
+    if (score >= 75) return "Beautiful chemistry. Your love tree is blooming with divine energy.";
+    if (score >= 60) return "There is deep warmth here. Nurture it with care and chocolate.";
+    return "A quiet spark that may need time to flame into something grand.";
 }
 
 function showResults(score, couple, msg) {
@@ -68,26 +78,32 @@ function showResults(score, couple, msg) {
 
     res.classList.remove('hidden');
     perc.textContent = `${score}%`;
-    name.textContent = couple;
+    name.textContent = `Couple Name: ${couple}`;
     mess.textContent = msg;
-    
+
+    // Trigger progress bar animation
     fill.style.width = '0%';
     setTimeout(() => {
         fill.style.width = `${score}%`;
-    }, 50);
+    }, 100);
 }
 
 function spawnHearts() {
-    const hearts = ['❤️', '💖', '✨', '💕', '🌹'];
-    for (let i = 0; i < 15; i++) {
+    const icons = ['❤️', '💖', '✨', '🌹', '💎', '🥂', '💘', '💍'];
+    const count = window.innerWidth < 768 ? 15 : 30;
+    for (let i = 0; i < count; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
             heart.className = 'floating-heart';
-            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '100vh';
+            heart.style.top = '110vh';
+            // Apply golden glow to icons
+            heart.style.filter = 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.8))';
             document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 3000);
+
+            // Remove element after animation
+            setTimeout(() => heart.remove(), 4000);
         }, i * 100);
     }
 }
